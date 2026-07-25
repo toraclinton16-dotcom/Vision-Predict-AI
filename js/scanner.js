@@ -44,11 +44,22 @@ function processTick(data) {
 
     if (!data.tick) return;
 
-    marketData[data.tick.symbol] = {
-        symbol: data.tick.symbol,
-        price: data.tick.quote,
-        epoch: data.tick.epoch
-    };
+    const symbol = data.tick.symbol;
+    const price = Number(data.tick.quote);
+
+    if (!marketData[symbol]) {
+        marketData[symbol] = {
+            symbol,
+            prices: []
+        };
+    }
+
+    marketData[symbol].prices.push(price);
+
+    // Keep only the latest 30 ticks
+    if (marketData[symbol].prices.length > 30) {
+        marketData[symbol].prices.shift();
+    }
 
     document.getElementById("marketCount").textContent =
         Object.keys(marketData).length;
