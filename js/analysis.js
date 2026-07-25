@@ -46,27 +46,31 @@ function analyzeMarkets() {
     if (!best) return;
 
     const lastPrice = best.prices[best.prices.length - 1];
-    const firstPrice = best.prices[0];
 
     document.getElementById("bestMarket").textContent = best.symbol;
     document.getElementById("selectedMarket").textContent = best.symbol;
-    document.getElementById("confidence").textContent = Math.min(highestScore, 99) + "%";
 
-    if (lastPrice > firstPrice) {
-        document.getElementById("prediction").textContent = "🟢 RISE";
-    } else if (lastPrice < firstPrice) {
-        document.getElementById("prediction").textContent = "🔴 FALL";
-    } else {
-        document.getElementById("prediction").textContent = "🟡 WAIT";
-    }
+    const result = generateSignal(best);
+
+    document.getElementById("prediction").textContent =
+        result.signal;
+
+    document.getElementById("confidence").textContent =
+        result.confidence + "%";
 
     document.getElementById("signalStrength").textContent =
-        highestScore >= 80 ? "STRONG" :
-        highestScore >= 60 ? "MEDIUM" : "WEAK";
+        result.strength;
 
-    document.getElementById("duration").textContent = "5 Ticks";
+    document.getElementById("duration").textContent =
+        SETTINGS.predictionDuration + " Ticks";
 
     calculateRisk(lastPrice);
+
+    addPrediction(
+        best.symbol,
+        result.signal,
+        result.confidence
+    );
 
     updateRanking();
 }
