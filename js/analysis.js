@@ -4,62 +4,69 @@ function analyzeMarkets() {
 
     if (markets.length === 0) return;
 
-    let bestMarket = null;
+    let best = null;
+
     let highestScore = -1;
 
     markets.forEach(market => {
 
-        let score = 0;
+        if (market.prices.length < 10) return;
 
-        // Price movement
-        if (market.price % 2 === 0) {
-            score += 10;
-        } else {
-            score += 5;
+        const first = market.prices[0];
+        const last = market.prices[market.prices.length - 1];
+
+        const change = last - first;
+
+        let score = 50;
+
+        if (change > 0) {
+            score += 20;
+        } else if (change < 0) {
+            score -= 20;
         }
 
-        // Temporary random factor (will be removed later)
-        score += Math.floor(Math.random() * 90);
+        // Recent momentum
+        let rising = 0;
+
+        for (let i = 1; i < market.prices.length; i++) {
+            if (market.prices[i] > market.prices[i - 1]) {
+                rising++;
+            }
+        }
+
+        score += rising;
 
         if (score > highestScore) {
             highestScore = score;
-            bestMarket = market;
+            best = market;
         }
 
     });
 
-    if (!bestMarket) return;
+    if (!best) return;
 
-    document.getElementById("bestMarket").textContent =
-        bestMarket.symbol;
+    const lastPrice = best.prices[best.prices.length - 1];
+    const firstPrice = best.prices[0];
 
-    document.getElementById("selectedMarket").textContent =
-        bestMarket.symbol;
+    document.getElementById("bestMarket").textContent = best.symbol;
+    document.getElementById("selectedMarket").textContent = best.symbol;
+    document.getElementById("confidence").textContent = Math.min(highestScore, 99) + "%";
 
-    document.getElementById("confidence").textContent =
-        highestScore + "%";
-
-    if (highestScore >= 85) {
-
+    if (lastPrice > firstPrice) {
         document.getElementById("prediction").textContent = "🟢 RISE";
-        document.getElementById("signalStrength").textContent = "VERY STRONG";
-
-    } else if (highestScore >= 70) {
-
-        document.getElementById("prediction").textContent = "🟡 WAIT";
-        document.getElementById("signalStrength").textContent = "MODERATE";
-
-    } else {
-
+    } else if (lastPrice < firstPrice) {
         document.getElementById("prediction").textContent = "🔴 FALL";
-        document.getElementById("signalStrength").textContent = "WEAK";
-
+    } else {
+        document.getElementById("prediction").textContent = "🟡 WAIT";
     }
+
+    document.getElementById("signalStrength").textContent =
+        highestScore >= 80 ? "STRONG" :
+        highestScore >= 60 ? "MEDIUM" : "WEAK";
 
     document.getElementById("duration").textContent = "5 Ticks";
 
-    calculateRisk(bestMarket.price);
+    calculateRisk(lastPrice);
 
     updateRanking();
-
 }
