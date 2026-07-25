@@ -1,42 +1,65 @@
-/**
- * Analysis Module
- * Handles image analysis and feature extraction
- */
-
 function analyzeMarkets() {
-
-    if (Object.keys(marketData).length === 0) return;
-
-    updateRanking();
 
     const markets = Object.values(marketData);
 
-    const best = markets[Math.floor(Math.random() * markets.length)];
+    if (markets.length === 0) return;
 
-    document.getElementById("bestMarket").textContent = best.symbol;
+    let bestMarket = null;
+    let highestScore = -1;
 
-    document.getElementById("selectedMarket").textContent = best.symbol;
+    markets.forEach(market => {
 
-    document.getElementById("prediction").textContent =
-        Math.random() > 0.5 ? "🟢 RISE" : "🔴 FALL";
+        let score = 0;
+
+        // Price movement
+        if (market.price % 2 === 0) {
+            score += 10;
+        } else {
+            score += 5;
+        }
+
+        // Temporary random factor (will be removed later)
+        score += Math.floor(Math.random() * 90);
+
+        if (score > highestScore) {
+            highestScore = score;
+            bestMarket = market;
+        }
+
+    });
+
+    if (!bestMarket) return;
+
+    document.getElementById("bestMarket").textContent =
+        bestMarket.symbol;
+
+    document.getElementById("selectedMarket").textContent =
+        bestMarket.symbol;
 
     document.getElementById("confidence").textContent =
-        Math.floor(Math.random() * 21 + 80) + "%";
+        highestScore + "%";
+
+    if (highestScore >= 85) {
+
+        document.getElementById("prediction").textContent = "🟢 RISE";
+        document.getElementById("signalStrength").textContent = "VERY STRONG";
+
+    } else if (highestScore >= 70) {
+
+        document.getElementById("prediction").textContent = "🟡 WAIT";
+        document.getElementById("signalStrength").textContent = "MODERATE";
+
+    } else {
+
+        document.getElementById("prediction").textContent = "🔴 FALL";
+        document.getElementById("signalStrength").textContent = "WEAK";
+
+    }
 
     document.getElementById("duration").textContent = "5 Ticks";
 
-}
+    calculateRisk(bestMarket.price);
 
-const Analysis = {
-    analyzeImage: function(image) {
-        // Analyze image content
-    },
-    
-    extractFeatures: function(image) {
-        // Extract visual features from image
-    },
-    
-    detectPatterns: function(data) {
-        // Detect patterns in analyzed data
-    }
-};
+    updateRanking();
+
+}
