@@ -12,14 +12,168 @@
     <script src="js/scanner.js" defer></script>
     <script src="js/analysis.js" defer></script>
     <script src="js/prediction.js" defer></script>
-    <script src="js/ranking.js" defer></script>
+    <script src="js/ranking.js"defer></script>
     <script src="js/history.js" defer></script>
     <script src="js/risk.js" defer></script>
     <script src="js/utils.js" defer></script>
 </head>
 <body>
 
-<!-- Your dashboard HTML goes here -->
+<header class="header">
+    <h1>🤖 Vision Predict AI</h1>
+    <p>Deriv Rise &amp; Fall Multi-Market Analysis Dashboard</p>
+</header>
+
+<section class="status-container">
+
+    <div class="card">
+        <h3>Connection</h3>
+        <p id="connectionStatus">Disconnected</p>
+    </div>
+
+    <div class="card">
+        <h3>AI Scanner</h3>
+        <p id="scannerStatus">Waiting...</p>
+    </div>
+
+    <div class="card">
+        <h3>Markets Scanned</h3>
+        <p id="marketCount">0</p>
+    </div>
+
+    <div class="card">
+        <h3>Best Market</h3>
+        <p id="bestMarket">--</p>
+    </div>
+
+</section>
+
+<section class="prediction-card">
+
+    <h2>AI Prediction</h2>
+
+    <p><strong>Selected Market:</strong>
+        <span id="selectedMarket">--</span>
+    </p>
+
+    <p><strong>Prediction:</strong>
+        <span id="prediction">WAIT</span>
+    </p>
+
+    <p><strong>Confidence:</strong>
+        <span id="confidence">0%</span>
+    </p>
+
+    <p><strong>Signal Strength:</strong>
+        <span id="signalStrength">--</span>
+    </p>
+
+    <p><strong>Duration:</strong>
+        <span id="duration">--</span>
+    </p>
+
+</section>
+
+<section class="targets">
+
+    <div class="card">
+        <h3>TP1</h3>
+        <p id="tp1">--</p>
+    </div>
+
+    <div class="card">
+        <h3>TP2</h3>
+        <p id="tp2">--</p>
+    </div>
+
+    <div class="card">
+        <h3>TP3</h3>
+        <p id="tp3">--</p>
+    </div>
+
+    <div class="card">
+        <h3>Stop Loss</h3>
+        <p id="sl">--</p>
+    </div>
+
+</section>
+
+<section class="countdown">
+    <h2>Prediction Duration</h2>
+    <h1 id="timer">00:00</h1>
+</section>
+
+<section class="ranking">
+
+    <h2>Market Ranking</h2>
+
+    <table>
+
+        <thead>
+
+        <tr>
+            <th>Rank</th>
+            <th>Market</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Duration</th>
+        </tr>
+
+        </thead>
+
+        <tbody id="rankingBody">
+
+        </tbody>
+
+    </table>
+
+</section>
+
+<section class="history">
+
+    <h2>Prediction History</h2>
+
+    <div id="history">
+        No predictions yet.
+    </div>
+
+</section>
+
+<section class="settings">
+
+    <h2>Settings</h2>
+
+    <label>Prediction Duration</label>
+
+    <input
+        id="durationInput"
+        type="number"
+        value="5"
+        min="1"
+        max="100">
+
+    <br><br>
+
+    <label>Minimum Confidence</label>
+
+    <input
+        id="confidenceInput"
+        type="number"
+        value="80"
+        min="50"
+        max="99">
+
+    <br><br>
+
+    <button onclick="saveSettings()">
+        Save Settings
+    </button>
+
+</section>
+
+<footer>
+    <small>Vision-Predict-AI</small>
+</footer>
 
 </body>
 </html>
